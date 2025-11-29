@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: entrolytics-notifier
+  devtools:
+    restart:
+      enabled: false
+
+  main:
+    web-application-type: none  # Disable Tomcat / web environment
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.boot.SpringApplication: OFF
+    com.motilent.entrolytics_notifier: DEBUG
+    reactor.netty: ERROR
+#  config: classpath:logback-test.xml
+  org.springframework.boot.autoconfigure: ERROR
+  org.springframework.boot.context: ERROR
+  org.springframework: ERROR

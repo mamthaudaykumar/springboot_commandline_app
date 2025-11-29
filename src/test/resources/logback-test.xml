@@ -1,0 +1,22 @@
+<configuration>
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <logLevel/>
+                <loggerName/>
+                <threadName/>
+                <message/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- Only log errors from Spring / root -->
+    <root level="ERROR">
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+
+    <!-- Enable debug for your package -->
+    <logger name="com.motilent.entrolytics_notifier" level="DEBUG"/>
+</configuration>
