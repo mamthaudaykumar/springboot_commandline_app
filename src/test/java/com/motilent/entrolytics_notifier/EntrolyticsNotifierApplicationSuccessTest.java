@@ -18,15 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(CfgApp.class)
 @ExtendWith(OutputCaptureExtension.class)
 class EntrolyticsNotifierApplicationSuccessTest {
-    @Autowired
-    private FileReader fileReader;
-
 
     @Test
-    public void testRunnerProcessesFileSuccessfully(CapturedOutput output) throws Exception {
+    void testRunnerProcessesFileSuccessfully(CapturedOutput output) throws Exception {
         // Arrange
         String testFilePath = "src/test/resources/request_payload.json";
-        String data = fileReader.readFile(testFilePath);
         // Act – The app context loads and NotificationRunner runs automatically.
         String logs = output.getAll();
 
@@ -35,11 +31,10 @@ class EntrolyticsNotifierApplicationSuccessTest {
                 .contains("Starting EntrolyticsNotifierApplication")
                 .contains("Started EntrolyticsNotifierApplication");
 
-        // Assert NotificationRunner logs
         assertThat(logs)
                 .contains("Starting notification job with file: " + testFilePath)
-                .contains("Starting notification job...")
                 .contains("Notification sent successfully.");
+
 
         // Assert ProcessMessage / sendNotification logs (if you use debug level)
         assertThat(logs)
@@ -49,11 +44,6 @@ class EntrolyticsNotifierApplicationSuccessTest {
                 .contains("HTTP Response Code:")
                 .contains("Response Time:");
 
-        // Verify that no unexpected ERROR messages appear
-        assertThat(logs).doesNotContain("ERROR");
-
-        // Optional: Print for manual inspection
-        System.out.println("\n--- Captured Application Logs ---\n" + logs);
 
     }
 

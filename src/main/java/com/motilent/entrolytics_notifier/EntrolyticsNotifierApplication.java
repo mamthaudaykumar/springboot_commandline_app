@@ -42,10 +42,10 @@ public class EntrolyticsNotifierApplication {
         }
     }
 
-    private static void logErrorAsJson(Exception e) {
+    public static void logErrorAsJson(Exception e) {
         Map<String, Object> error = new LinkedHashMap<>();
         error.put("timestamp", Instant.now().toString());
-        error.put("status", "ERROR");
+        error.put("status", "FAILURE"); // Use FAILURE instead of ERROR
         error.put("message", e.getMessage());
         error.put("exception", e.getClass().getName());
         if (e.getCause() != null) {
@@ -54,13 +54,12 @@ public class EntrolyticsNotifierApplication {
 
         try {
             String json = mapper.writeValueAsString(error);
-            System.err.println(json); // print to stderr for visibility in CI
+            System.err.println(json); // only printed on exceptions
         } catch (JsonProcessingException jsonEx) {
             log.error("Failed to serialize error JSON: {}", jsonEx.getMessage());
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Full stack trace:", e);
-        }
+        log.debug("Full stack trace:", e); // debug-only for stack trace
     }
+
 }

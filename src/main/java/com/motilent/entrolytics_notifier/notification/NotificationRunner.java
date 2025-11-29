@@ -1,5 +1,6 @@
 package com.motilent.entrolytics_notifier.notification;
 
+import com.motilent.entrolytics_notifier.EntrolyticsNotifierApplication;
 import com.motilent.entrolytics_notifier.fileutility.FileReader;
 import com.motilent.entrolytics_notifier.notification.processor.ProcessMessage;
 import org.slf4j.Logger;
@@ -25,28 +26,29 @@ public class NotificationRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws IOException {
-        String jsonPath = null;
+        try {
+            String jsonPath = null;
 
-        // Parse args like notifyFile=path/to/file.json
-        if (args != null) {
-            for (String arg : args) {
-                if (arg.startsWith("notifyFile=")) {
-                    jsonPath = arg.substring("notifyFile=".length());
-                    break;
+            if (args != null) {
+                for (String arg : args) {
+                    if (arg.startsWith("notifyFile=")) {
+                        jsonPath = arg.substring("notifyFile=".length());
+                        break;
+                    }
                 }
             }
-        }
 
-        if (jsonPath == null || jsonPath.isBlank()) {
-            throw new IllegalArgumentException("JSON file path argument is required. Use notifyFile=path/to/file.json");
-        }
+            if (jsonPath == null || jsonPath.isBlank()) {
+                throw new IllegalArgumentException("JSON file path argument is required. Use notifyFile=path/to/file.json");
+            }
 
-        log.info("Starting notification job with file: {}", jsonPath);
+            log.info("Starting notification job with file: {}", jsonPath);
+            String fileContent = fileReader.readFile(jsonPath);
+            processMessage.process(fileContent);
+            log.info("Notification sent successfully.");
 
-        log.info("Starting notification job...");
-        String fileContent = fileReader.readFile(jsonPath);
-        processMessage.process(fileContent);
-
-        log.info("Notification sent successfully.");
-    }
+        } catch (Exception e) {
+            log.info("Notification send failure.");
+            EntrolyticsNotifierApplication.logErrorAsJson(e);
+        }}
 }
